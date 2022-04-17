@@ -18,14 +18,13 @@ class Lib_Serial(QThread):
         self.timeout = _timeout
 
     def connect(self):
-        self._serial = serial.Serial(self.port, self.baudrate, self.timeout)
+        self._serial = serial.Serial(self.port, self.baudrate)
 
     def run(self):
         self.thread_active = True
         while self.thread_active:
-            if self._serial.in_waiting > 0:
-                recv = self._serial.read(self._serial.in_waiting)
-                self.signal_serial.emit(recv)
+            recv = self._serial.readline()
+            self.signal_serial.emit(recv.decode())
 
     def stop(self):
         self.thread_active = False

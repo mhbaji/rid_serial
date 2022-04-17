@@ -1,4 +1,3 @@
-from curses import baudrate
 from PyQt5 import QtCore, QtGui, QtWidgets
 from lib.lib_serial import Lib_Serial
 from datetime import date, datetime
@@ -68,7 +67,6 @@ class Ui_RidSerial(object):
         if len(port) > 0:
             _baudrate = self.cb_baudrate.currentText()
             _int_baudrate = int(_baudrate)
-            print(_int_baudrate, type(_int_baudrate))
             self.serial.set(port, _int_baudrate)
             
             try:
@@ -78,7 +76,6 @@ class Ui_RidSerial(object):
                 print('ex', ex)
                 self.isConnected = False
 
-            print('self.isConnected', self.isConnected)
             if self.isConnected:
                 self.serial.start()
                 self.pb_start_stop.setText("Stop")
@@ -93,9 +90,26 @@ class Ui_RidSerial(object):
         self.serial = Lib_Serial()
         self.serial.signal_serial.connect(self._update_serial)
     
-    def _update_serial(self, str):
+    def _update_serial(self, str_value):
         now = datetime.now()
-        self._append_result(now, str)
+        str_split = str_value.split(',')
+        _digit = []
+        for splt in str_split:
+            _tmp = ''
+            for x in splt:
+                if x.isdigit() or x == '.':
+                    _tmp+=x
+
+            try:
+                _tmp_digit = int(_tmp)
+            except:
+                _tmp_digit = float(_tmp)
+                pass
+
+            _digit.append(_tmp_digit)
+        
+        _format_append = "{} {}".format(str_split, _digit)
+        self._append_result(now, _format_append)
     
     def _append_result(self, now, msg):
         self.tb_result.append("[{}] {}".format(self._get_time(now), msg))
