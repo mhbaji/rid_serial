@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets
-from lib.guiV1 import Ui_RidSerial
+from lib.gui import Ui_RidSerial
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
